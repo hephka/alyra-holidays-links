@@ -17,4 +17,4 @@ const defaultList = [
     url: `https://cassie.codes/`,
     category: "inspiration",
   },
-]
+];
