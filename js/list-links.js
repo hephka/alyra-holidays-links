@@ -11,7 +11,9 @@ class ListLinks {
   pushEl(el) {
     /* @todo : remplacer array vide [] dans const urls = [], par l'array qui contient tous les urls
     trouvés dans this.list */
-    const urls = [];
+    console.log(this.list);
+    const urls = this.list.map((el) => el.url);
+    console.log(urls);
 
     if (!urls.includes(el.url)) {
       // si el.url n'est pas dans la liste des urls
@@ -19,18 +21,22 @@ class ListLinks {
       this.list.push(el);
       // et j'appelle la méthode refresh
       this.refresh();
+    } else {
+      alert("Ce lien est déjà inclu");
     }
   }
   remove(el) {
     const i = this.list.findIndex((item) => item === el); // <- ce code trouve index de l'élément récherché
-    this.list.splice(index, 1); // <- ce code enleve l'élément avec index i de list
+    // i = 0 si je click sur le premier élément
+    this.list.splice(i, 1); // <- ce code enleve l'élément avec index i de list
+    console.log(this.list);
     // @todo : appeller la méthode refresh
     this.refresh();
   }
   refresh() {
     // @todo: appele la méthode addToLocalStorage
-    this.addToLocalStorage();
     // @todo: appele la méthode render
+    this.addToLocalStorage();
     this.render();
   }
   addToLocalStorage() {
@@ -104,9 +110,11 @@ class ListLinks {
   }
 
   createButtonElement() {
-    const el = document.createElement("button");
     // @todo : ajouter des classes btn btn-warning btn-sm
+    const el = document.createElement("button");
+    el.type = "button";
     el.classList.add("btn", "btn-warning", "btn-sm");
+    return el;
   }
 
   addTitle(el) {
@@ -119,6 +127,7 @@ class ListLinks {
   addDescription(el) {
     // @todo : retourner le markup pour la description, <p>Voici la description</p>
     const descriptionEl = this.createDescriptionElement();
+    descriptionEl.textContent = el.description;
     return descriptionEl;
   }
 
@@ -132,8 +141,12 @@ class ListLinks {
   }
 
   addButton(el) {
-    // @todo : mettre le texte "Supprimer le lien"
     const buttonEl = this.createButtonElement();
+    buttonEl.textContent = "Supprimer le lien";
+    buttonEl.addEventListener("click", () => {
+      this.remove(el);
+    });
+    // @todo : mettre le texte "Supprimer le lien"
     // @todo : ajouter un eventListener qui écoute pour 'click' qui déclanchera la méthode remove
     // @todo : retourner buttonEl
     return buttonEl;
