@@ -9,12 +9,10 @@ class ListLinks {
   }
 
   pushEl(el) {
-    /* @todo : remplacer array vide [] dans const urls = [], par l'array qui contient tous les urls
-    trouvés dans this.list */
-    console.log(this.list);
+    /*on cree un array qui contient tous les urls trouvés dans this.list */
+    console.log("liste avant le push :", this.list);
     const urls = this.list.map((el) => el.url);
-    console.log(urls);
-
+    console.log("liste urls avant push :", urls);
     if (!urls.includes(el.url)) {
       // si el.url n'est pas dans la liste des urls
       // je l'ajoute
@@ -22,45 +20,42 @@ class ListLinks {
       // et j'appelle la méthode refresh
       this.refresh();
     } else {
-      alert("Ce lien est déjà inclu");
+      alert("Ce lien est déjà inclus");
     }
+    console.log("liste apres le push :", this.list);
   }
   remove(el) {
-    const i = this.list.findIndex((item) => item === el); // <- ce code trouve index de l'élément récherché
-    // i = 0 si je click sur le premier élément
-    this.list.splice(i, 1); // <- ce code enleve l'élément avec index i de list
-    console.log(this.list);
-    // @todo : appeller la méthode refresh
+    const i = this.list.findIndex((item) => item === el);
+    // <- ce code trouve index de l'élément récherché
+    this.list.splice(i, 1); // <- ce code enleve l'élément avec index i de this.list
+    console.log("liste apres suppression :", this.list);
     this.refresh();
   }
   refresh() {
-    // @todo: appele la méthode addToLocalStorage
-    // @todo: appele la méthode render
-    this.addToLocalStorage();
     this.render();
+    this.addToLocalStorage();
   }
   addToLocalStorage() {
     /*
-     le code ci-dessous convertis l'array list (array qui contients des objet) en format JSON afin de la
-     sauvegarder en localStorage dans la clé "listLinks"
+     le code ci-dessous convertit l'array list (array qui contients des objet)
+     en format JSON afin de la sauvegarder en localStorage dans la clé
+     "listLinks"
     */
     localStorage.setItem("listLinks", JSON.stringify(this.list));
   }
   render() {
     const ulEl = this.addUl();
     this.container.innerHTML = "";
-    // @todo : attache ulEl à la fin de container
     this.container.append(ulEl);
   }
 
   addUl() {
     const ulEl = this.createUlElement();
+    console.log(this.list);
     for (let el of this.list) {
       const li = this.addLi(el);
-      // @todo : append chaque li à élément ulEl
       ulEl.append(li);
     }
-    // @todo : retourner ulEl
     return ulEl;
   }
 
@@ -70,26 +65,19 @@ class ListLinks {
     liEl.append(this.addDescription(el));
     liEl.append(this.addLink(el));
     liEl.append(this.addButton(el));
-    // @todo : mettre en place le reste de son contentu en utilisant les méthodes
-    //  addDescription(el)
-    //  addLink(el)
-    //  addButton(el)
-    //  retourner liEl
     return liEl;
   }
 
   createUlElement() {
-    const ul = document.createElement("ul");
-    // @todo : ajouter des classes row list-unstyled mt-4
-    ul.classList.add("row", "list-unstyled", "mt-4");
-    return ul;
+    const ulEl = document.createElement("ul");
+    ulEl.classList.add("row", "list-unstyled", "mt-4", "gx-0");
+    return ulEl;
   }
 
   createLiElement() {
-    const el = document.createElement("li");
-    // @todo : ajouter des classes à liEl border shadow-sm mb-3 p-2
-    el.classList.add("border", "shadow-sm", "mb-3", "p-2");
-    return el;
+    const liEl = document.createElement("li");
+    liEl.classList.add("border", "shadow-sm", "mb-3", "p-2");
+    return liEl;
   }
 
   createTitleElement() {
@@ -105,12 +93,12 @@ class ListLinks {
 
   createLinkElement() {
     const el = document.createElement("a");
-    el.classList.add("btn-sm", "btn-ouline-warning", "mr-2");
+    el.classList.add("btn", "btn-sm", "btn-outline-warning", "mr-2");
     return el;
   }
 
   createButtonElement() {
-    // @todo : ajouter des classes btn btn-warning btn-sm
+    // <button type="button" class="btn btn-warning btn-sm"></button>
     const el = document.createElement("button");
     el.type = "button";
     el.classList.add("btn", "btn-warning", "btn-sm");
@@ -118,26 +106,22 @@ class ListLinks {
   }
 
   addTitle(el) {
-    const titleEl = this.createTitleElement();
-    titleEl.textContent = el.title;
-    // @todo : retourner le markup pour le titre (h3.h6.mb-0), <h3 class="h6 mb-0">Le titre</h3>
-    return titleEl;
+    const title = this.createTitleElement();
+    title.textContent = el.title;
+    return title;
   }
 
   addDescription(el) {
-    // @todo : retourner le markup pour la description, <p>Voici la description</p>
-    const descriptionEl = this.createDescriptionElement();
-    descriptionEl.textContent = el.description;
-    return descriptionEl;
+    const description = this.createDescriptionElement();
+    description.textContent = el.description;
+    return description;
   }
 
   addLink(el) {
-    /* @todo : retourner le markup pour le lien vers le ressource a.btn.btn-sm.btn-ouline-warning.mr-2 
-    avec le texte visitez le lien */
-    const linkEl = this.createLinkElement();
-    linkEl.textContent = "Visiter le lien";
-    linkEl.href = el.url;
-    return linkEl;
+    const a = this.createLinkElement();
+    a.textContent = "visiter le lien";
+    a.href = el.url;
+    return a;
   }
 
   addButton(el) {
@@ -146,9 +130,72 @@ class ListLinks {
     buttonEl.addEventListener("click", () => {
       this.remove(el);
     });
-    // @todo : mettre le texte "Supprimer le lien"
-    // @todo : ajouter un eventListener qui écoute pour 'click' qui déclanchera la méthode remove
-    // @todo : retourner buttonEl
     return buttonEl;
+  }
+}
+
+//elements HTML recupérés pour faire le tri et filtre
+const selectSort = document.getElementById("selectSort");
+const selectCategory = document.getElementById("selectCategory");
+
+/*déclaration child class avec nouvelles clés filtre et tri choisis et méthodes
+filter et sort*/
+class FilteredSortedLinks extends ListLinks {
+  //modification constructor parent
+  constructor(container, defaultList, categoryOption, sortOption) {
+    super(container, defaultList);
+    this.categoryOption = categoryOption;
+    this.sortOption = sortOption;
+  }
+  // filtre liste
+  filter() {
+    const filteredList = this.list.filter((element) => {
+      if (this.categoryOption === "toutes") {
+        return true;
+      } else {
+        return element.category === this.categoryOption;
+      }
+    });
+    console.log("catégorie choisie :", this.categoryOption);
+    return filteredList;
+  }
+
+  // tri AZ par title
+  sortByTitle(list) {
+    return list.sort((right, left) =>
+      right.title.toLowerCase() > left.title.toLowerCase() ? 1 : -1
+    );
+  }
+
+  // tri ZA par title
+  sortByTitleReverse(list) {
+    return list.sort((right, left) =>
+      right.title.toLowerCase() < left.title.toLowerCase() ? 1 : -1
+    );
+  }
+
+  //tri liste filtrée en appelant méthodes de tri
+  sort() {
+    const filteredList = this.filter();
+    if (this.sortOption === "AZ") {
+      this.sortByTitle(filteredList);
+    } else {
+      this.sortByTitleReverse(filteredList);
+    }
+    console.log("tri choisi :", this.sortOption);
+    console.log("liste filtrée et triée", filteredList);
+    return filteredList;
+  }
+
+  /*mise à jour methode addUl du parent pour créer liEl selon liste filtrée et
+  triée*/
+  addUl() {
+    const sortedList = this.sort();
+    const ulEl = this.createUlElement();
+    for (let el of sortedList) {
+      const li = this.addLi(el);
+      ulEl.append(li);
+    }
+    return ulEl;
   }
 }
